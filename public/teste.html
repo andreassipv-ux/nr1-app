@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Teste NR-1</title>
+</head>
+<body>
+  <h2>Teste API Denúncias</h2>
+
+  <button onclick="enviar()">Enviar denúncia</button>
+
+  <script>
+    async function enviar() {
+      const res = await fetch("http://localhost:3000/api/denuncias", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          mensagem: "Teste direto no navegador",
+          tipo: "segurança"
+        })
+      });
+
+      const data = await res.json();
+      alert(JSON.stringify(data));
+    }
+  </script>
+</body>
+</html>
