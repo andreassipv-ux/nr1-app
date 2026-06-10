@@ -1,28 +1,17 @@
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "../supabaseClient";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+export async function atualizarStatus(
+  id: string,
+  status: string
+) {
 
-export default async function handler(req, res) {
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("denuncias")
-    .select("status");
+    .update({ status })
+    .eq("id", id);
 
   if (error) {
-    return res.status(500).json({ error: error.message });
+    throw error;
   }
 
-  const total = data.length;
-  const abertas = data.filter(d => d.status === "aberto").length;
-  const emAnalise = data.filter(d => d.status === "em análise").length;
-  const resolvidas = data.filter(d => d.status === "resolvido").length;
-
-  return res.status(200).json({
-    total,
-    abertas,
-    emAnalise,
-    resolvidas,
-  });
 }

@@ -3,22 +3,25 @@ import Link from "next/link";
 export default function CampanhasPage() {
   const campanhas = [
     {
-      nome: "Apresentação Curta",
-      arquivo: "/pdfs/campanha-01.pdf",
+      nome: "Vídeo da Campanha NR-1",
+      tipo: "video",
+      arquivo: "https://youtu.be/D9v9m7RxGCE",
     },
     {
       nome: "Apresentação Completa",
+      tipo: "pdf",
       arquivo: "/pdfs/campanha-02.pdf",
     },
     {
       nome: "Trabalho Acadêmico",
+      tipo: "pdf",
       arquivo: "/pdfs/campanha-03.pdf",
     },
   ];
 
   return (
-    <main className="min-h-screen bg-gray-100 p-8">
-      <h1 className="text-3xl font-bold text-green-700 mb-6">
+    <main className="min-h-screen bg-gray-100 p-4 md:p-8">
+      <h1 className="mb-6 text-2xl font-bold text-green-700 md:text-3xl">
         Campanhas NR-1
       </h1>
 
@@ -26,49 +29,51 @@ export default function CampanhasPage() {
         {campanhas.map((campanha, index) => (
           <div
             key={index}
-            className="bg-white p-4 rounded-2xl shadow flex items-center justify-between"
+            className="rounded-2xl bg-white p-4 shadow"
           >
-            <div>
-              <h2 className="font-semibold text-lg">
-                {campanha.nome}
-              </h2>
-            </div>
+            <h2 className="mb-4 text-lg font-semibold">
+              {campanha.nome}
+            </h2>
 
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row">
               <a
                 href={campanha.arquivo}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-green-700 text-white px-4 py-2 rounded-xl hover:bg-green-800 transition"
+                className="rounded-xl bg-green-700 px-4 py-2 text-center text-white transition hover:bg-green-800"
               >
-                Abrir PDF
+                {campanha.tipo === "video"
+                  ? "Assistir Vídeo"
+                  : "Abrir PDF"}
               </a>
 
-              <a
-                href={campanha.arquivo}
-                download
-                className="bg-gray-700 text-white px-4 py-2 rounded-xl hover:bg-gray-800 transition"
-              >
-                Baixar
-              </a>
+              {campanha.tipo === "pdf" && (
+                <a
+                  href={campanha.arquivo}
+                  download
+                  className="rounded-xl bg-gray-700 px-4 py-2 text-center text-white transition hover:bg-gray-800"
+                >
+                  Baixar
+                </a>
+              )}
             </div>
           </div>
         ))}
       </div>
 
-      <div className="mt-10 flex justify-center gap-4">
+      <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center">
         <a
           href="https://wa.me/?text=Confira%20o%20Sistema%20NR-1"
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-blue-600 text-white px-6 py-3 rounded-2xl shadow hover:bg-blue-700 transition font-semibold"
+          className="rounded-2xl bg-blue-600 px-6 py-3 text-center font-semibold text-white shadow transition hover:bg-blue-700"
         >
           Compartilhar
         </a>
 
         <Link
           href="/"
-          className="bg-gray-600 text-white px-6 py-3 rounded-2xl shadow hover:bg-gray-700 transition font-semibold"
+          className="rounded-2xl bg-gray-600 px-6 py-3 text-center font-semibold text-white shadow transition hover:bg-gray-700"
         >
           Voltar
         </Link>

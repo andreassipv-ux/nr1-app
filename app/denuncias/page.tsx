@@ -127,6 +127,13 @@ export default function DenunciaPage() {
             {loading ? "Enviando..." : "Enviar Denúncia"}
           </button>
 
+          <a
+            href="/"
+            className="bg-gray-700 text-white p-3 rounded-lg text-center hover:bg-gray-800 transition"
+          >
+            Voltar ao início
+          </a>
+
         </form>
 
         <p className="text-xs text-gray-400 text-center mt-4">

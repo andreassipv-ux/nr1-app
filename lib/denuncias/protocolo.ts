@@ -1,3 +1,4 @@
+import { NextApiRequest, NextApiResponse } from "next";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -5,15 +6,22 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export default async function handler(req, res) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== "GET") {
-    return res.status(405).json({ message: "Method not allowed" });
+    return res.status(405).json({
+      message: "Method not allowed",
+    });
   }
 
   const { codigo } = req.query;
 
   if (!codigo) {
-    return res.status(400).json({ error: "Protocolo obrigatório" });
+    return res.status(400).json({
+      error: "Protocolo obrigatório",
+    });
   }
 
   const { data, error } = await supabase
@@ -23,7 +31,9 @@ export default async function handler(req, res) {
     .single();
 
   if (error || !data) {
-    return res.status(404).json({ error: "Protocolo não encontrado" });
+    return res.status(404).json({
+      error: "Protocolo não encontrado",
+    });
   }
 
   return res.status(200).json(data);

@@ -1,116 +1,83 @@
-export default function Home() {
+import Link from "next/link";
+
+export default function CampanhasPage() {
+  const campanhas = [
+    {
+      nome: "Vídeo da Campanha NR-1",
+      tipo: "video",
+      arquivo: "https://youtu.be/D9v9m7RxGCE",
+    },
+    {
+      nome: "Apresentação Completa",
+      tipo: "pdf",
+      arquivo: "/pdfs/campanha-02.pdf",
+    },
+    {
+      nome: "Trabalho Acadêmico",
+      tipo: "pdf",
+      arquivo: "/pdfs/campanha-03.pdf",
+    },
+  ];
 
   return (
-
-    <main className="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-center">
-
-      {/* LOGO */}
-
-      <img
-        src="/logo.png"
-        alt="Logo NR-1"
-        className="w-32 h-32 object-contain mb-4"
-      />
-
-      {/* TÍTULO */}
-
-      <h1 className="text-4xl font-bold text-green-700">
-        NR-1 Aplicabilidade
+    <main className="min-h-screen bg-gray-100 p-4 md:p-8">
+      <h1 className="mb-6 text-2xl font-bold text-green-700 md:text-3xl">
+        Campanhas NR-1
       </h1>
 
-      {/* RESPONSÁVEL */}
+      <div className="space-y-4">
+        {campanhas.map((campanha, index) => (
+          <div
+            key={index}
+            className="rounded-2xl bg-white p-4 shadow"
+          >
+            <h2 className="mb-4 text-lg font-semibold">
+              {campanha.nome}
+            </h2>
 
-      <p className="mt-2 text-lg font-semibold text-gray-700">
-        Eng. Pedro Andreassi
-      </p>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <a
+                href={campanha.arquivo}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-xl bg-green-700 px-4 py-2 text-center text-white transition hover:bg-green-800"
+              >
+                {campanha.tipo === "video"
+                  ? "Assistir Vídeo"
+                  : "Abrir PDF"}
+              </a>
 
-      <p className="text-gray-500">
-        SST • Segurança e Prevenção
-      </p>
+              {campanha.tipo === "pdf" && (
+                <a
+                  href={campanha.arquivo}
+                  download
+                  className="rounded-xl bg-gray-700 px-4 py-2 text-center text-white transition hover:bg-gray-800"
+                >
+                  Baixar
+                </a>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
 
-      {/* DESCRIÇÃO */}
-
-      <p className="mt-6 text-gray-700 max-w-xl">
-        Proteção Integral ao Trabalhador • Saúde • Segurança • Prevenção
-      </p>
-
-      {/* BOTÕES */}
-
-      <div className="mt-10 flex flex-col gap-4 w-full max-w-sm">
-
-        {/* QR CODE */}
-
-        <a
-          href="/qr-reader"
-          className="block bg-green-700 text-white p-3 rounded-xl hover:bg-green-800 transition font-semibold"
-        >
-          Ler QR Code de Campanha
-        </a>
-
-        {/* CAMPANHAS */}
-
-        <a
-          href="/campanhas"
-          className="block bg-green-600 text-white p-3 rounded-xl hover:bg-green-700 transition font-semibold"
-        >
-          Ver Campanhas
-        </a>
-
-        {/* COMPARTILHAR */}
-
+      <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center">
         <a
           href="https://wa.me/?text=Confira%20o%20Sistema%20NR-1"
           target="_blank"
-          className="block bg-green-600 text-white p-3 rounded-xl hover:bg-green-700 transition font-semibold"
+          rel="noopener noreferrer"
+          className="rounded-2xl bg-blue-600 px-6 py-3 text-center font-semibold text-white shadow transition hover:bg-blue-700"
         >
           Compartilhar
         </a>
 
-        {/* DENÚNCIA */}
-
-        <a
-          href="/denuncias"
-          className="block bg-green-800 text-white font-bold p-3 rounded-xl hover:bg-green-700 transition"
+        <Link
+          href="/"
+          className="rounded-2xl bg-gray-600 px-6 py-3 text-center font-semibold text-white shadow transition hover:bg-gray-700"
         >
-          Denúncia Anônima
-        </a>
-
-        {/* NEWSLETTER */}
-
-        <a
-          href="/newsletter"
-          className="block bg-green-600 text-white p-3 rounded-xl hover:bg-green-700 transition font-semibold"
-        >
-          Newsletter / Contato
-        </a>
-
-        {/* SOBRE */}
-
-        <a
-          href="/sobre"
-          className="block bg-gray-700 text-white p-3 rounded-xl hover:bg-gray-800 transition font-semibold"
-        >
-          Sobre App
-        </a>
-
+          Voltar
+        </Link>
       </div>
-
-      {/* RODAPÉ */}
-
-      <footer className="mt-10 text-xs text-gray-500 text-center">
-
-        <p>
-          Versão 1.0 • Maio/2026
-        </p>
-
-        <p className="mt-1">
-          Desenvolvido por Eng. Pedro Andreassi
-        </p>
-
-      </footer>
-
     </main>
-
   );
-
 }
