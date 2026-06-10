@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -16,9 +16,9 @@ export default async function handler(
     });
   }
 
-  const { codigo } = req.query;
+  const codigo = req.query.codigo;
 
-  if (!codigo) {
+  if (!codigo || typeof codigo !== "string") {
     return res.status(400).json({
       error: "Protocolo obrigatório",
     });
