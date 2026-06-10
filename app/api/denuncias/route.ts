@@ -7,7 +7,9 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const resend = new Resend(process.env.RESEND_API_KEY!);
+const resend = process.env.RESEND_API_KEY
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null;
 
 const requests = new Map<string, { count: number; start: number }>();
 
@@ -89,7 +91,7 @@ export async function POST(req: Request) {
       );
     }
 
-    if (process.env.RESEND_API_KEY) {
+    if (resend) {
       await resend.emails.send({
         from: "NR-1 Sistema <onboarding@resend.dev>",
         to: "andreassipv@gmail.com",
