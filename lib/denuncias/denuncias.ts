@@ -1,6 +1,6 @@
+import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
-import type { NextApiRequest, NextApiResponse } from "next";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -9,12 +9,7 @@ const supabase = createClient(
 
 const resend = new Resend(process.env.RESEND_API_KEY!);
 
-type RequestBody = {
-  mensagem?: string;
-  tipo?: string;
-};
-
-// 🔐 RATE LIMIT
+// RATE LIMIT
 const requests = new Map<string, { count: number; start: number }>();
 
 function isRateLimited(ip: string): boolean {
@@ -29,7 +24,11 @@ function isRateLimited(ip: string): boolean {
   };
 
   if (now - userData.start > windowTime) {
-    requests.set(ip, { count: 1, start: now });
+    requests.set(ip, {
+      count: 1,
+      start: now,
+    });
+
     return false;
   }
 
@@ -44,32 +43,30 @@ function isRateLimited(ip: string): boolean {
   return false;
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
-  }
-
+export async function POST(req: Request) {
   try {
-    const ip =
-      (req.headers["x-forwarded-for"] as string) ||
-      req.socket.remoteAddress ||
-      "unknown";
+    const body = await req.json();
+
+    const { mensagem, tipo } = body;
+
+    const ip = "web";
 
     if (isRateLimited(ip)) {
-      return res.status(429).json({
-        error: "Muitas solicitações. Tente novamente em breve.",
-      });
+      return NextResponse.json(
+        {
+          error: "Muitas solicitações. Tente novamente em breve.",
+        },
+        { status: 429 }
+      );
     }
 
-    const { mensagem, tipo } = req.body as RequestBody;
-
     if (!mensagem?.trim() || !tipo?.trim()) {
-      return res.status(400).json({
-        error: "Campos obrigatórios faltando",
-      });
+      return NextResponse.json(
+        {
+          error: "Campos obrigatórios faltando",
+        },
+        { status: 400 }
+      );
     }
 
     const protocolo = `NR1-${new Date().getFullYear()}-${Date.now()}`;
@@ -87,34 +84,43 @@ export default async function handler(
       .select();
 
     if (error) {
-      return res.status(500).json({ error: error.message });
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      );
     }
 
-    await resend.emails.send({
-      from: "NR-1 Sistema <onboarding@resend.dev>",
-      to: "andreassipv@gmail.com",
-      subject: `Nova denúncia NR-1 - ${protocolo}`,
-      html: `
-        <h2>Nova denúncia NR-1</h2>
-        <p><b>Protocolo:</b> ${protocolo}</p>
-        <p><b>Tipo:</b> ${tipo}</p>
-        <p><b>Mensagem:</b></p>
-        <div style="padding:12px;background:#f4f4f4;border-radius:8px;">
-          ${mensagem}
-        </div>
-      `,
-    });
+    if (process.env.RESEND_API_KEY) {
+      await resend.emails.send({
+        from: "NR-1 Sistema <onboarding@resend.dev>",
+        to: "andreassipv@gmail.com",
+        subject: `Nova denúncia NR-1 - ${protocolo}`,
+        html: `
+          <h2>Nova denúncia NR-1</h2>
+          <p><b>Protocolo:</b> ${protocolo}</p>
+          <p><b>Tipo:</b> ${tipo}</p>
+          <p><b>Mensagem:</b></p>
+          <div style="padding:12px;background:#f4f4f4;border-radius:8px;">
+            ${mensagem}
+          </div>
+        `,
+      });
+    }
 
-    return res.status(200).json({
+    return NextResponse.json({
       message: "Denúncia enviada com sucesso",
       protocolo,
       data,
     });
-  } catch (err: unknown) {
+
+  } catch (err) {
     console.error(err);
 
-    return res.status(500).json({
-      error: "Erro interno no servidor",
-    });
+    return NextResponse.json(
+      {
+        error: "Erro interno no servidor",
+      },
+      { status: 500 }
+    );
   }
 }
